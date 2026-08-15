@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhishGuard - Phishing Detector</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #111827, #1e293b);
+            color: white;
+        }
+
+        /* Navbar */
+        .navbar {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8%;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .status {
+            font-size: 14px;
+            color: #4ade80;
+        }
+
+        /* Main */
+        .container {
+            width: 85%;
+            max-width: 1000px;
+            margin: 60px auto;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h1 span {
+            color: #38bdf8;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 17px;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        /* Detector Box */
+        .detector {
+            margin-top: 45px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            padding: 30px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 170px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            resize: none;
+            font-size: 15px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #38bdf8;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            margin-top: 18px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #38bdf8;
+            color: #082f49;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            background: #7dd3fc;
+        }
+
+        /* Result */
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid #334155;
+        }
+
+        .result h2 {
+            margin-bottom: 15px;
+        }
+
+        .risk-score {
+            font-size: 42px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .risk-level {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .reasons {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .reasons p {
+            margin: 10px 0;
+            color: #cbd5e1;
+        }
+
+        .recommendation {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(248,113,113,0.1);
+            color: #fca5a5;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: #64748b;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+
+            h1 {
+                font-size: 34px;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .navbar {
+                padding: 0 5%;
+            }
+
+            .detector {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🔐 <span>PhishGuard</span>
+        </div>
+
+        <div class="status">
+            ● Protection Active
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <div class="badge">
+            🛡️ Cybersecurity & Digital Trust
+        </div>
+
+        <h1>
+            Detect <span>Phishing</span><br>
+            Before You Click
+        </h1>
+
+        <p class="subtitle">
+            Analyze suspicious messages and URLs to identify potential
+            phishing threats and understand why they may be dangerous.
+        </p>
+
+
+        <!-- Detector -->
+        <section class="detector">
+
+            <label class="label">
+                📩 Enter Message or URL
+            </label>
+
+            <textarea
+                id="message"
+                placeholder="Paste a suspicious SMS, WhatsApp message, email, or URL here..."></textarea>
+
+            <button class="analyze-btn" onclick="analyzeMessage()">
+                🔍 Analyze for Phishing
+            </button>
+
+
+            <!-- Result -->
+            <div class="result" id="result">
+
+                <h2>Analysis Result</h2>
+
+                <div class="risk-score" id="riskScore">
+                    0/100
+                </div>
+
+                <div class="risk-level" id="riskLevel">
+                    SAFE
+                </div>
+
+                <div class="reasons">
+
+                    <h3>🔎 Detection Reasons</h3>
+
+                    <p id="reason1"></p>
+                    <p id="reason2"></p>
+                    <p id="reason3"></p>
+
+                </div>
+
+                <div class="recommendation" id="recommendation">
+                    🛡️ Recommendation
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        © 2026 PhishGuard | Cybersecurity & Digital Trust
+    </footer>
+
+
+    <!-- Temporary JavaScript -->
+    <script>
+
+     
+async function analyzeMessage() {
+
+    const message = document.getElementById("message").value;
+
+    if (message.trim() === "") {
+        alert("Please enter a message or URL.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/analyze", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: message
+            })
+
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // Show result box
+        document.getElementById("result").style.display = "block";
+
+        // Risk score
+        document.getElementById("riskScore").innerText =
+            data.score + "/100";
+
+        // Risk level
+        document.getElementById("riskLevel").innerText =
+            data.level;
+
+        // Detection reasons
+        document.getElementById("reason1").innerText =
+            data.reasons[0] || "";
+
+        document.getElementById("reason2").innerText =
+            data.reasons[1] || "";
+
+        document.getElementById("reason3").innerText =
+            data.reasons[2] || "";
+
+        // Recommendation
+        document.getElementById("recommendation").innerText =
+            "🛡️ " + data.recommendation;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert("Unable to connect to the server.");
+
+    }
+}
+
+
+    </script>
+
+</body>
+</html>
+
